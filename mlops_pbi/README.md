@@ -30,7 +30,7 @@
 ├── Makefile                        # store useful commands to set up the environment
 ├── models                          # store models
 ├── notebooks                       # store notebooks
-├── .pre-commit-config.yaml         # configurations for pre-commit
+├── .pre-commit-conf.yaml         # configurations for pre-commit
 ├── pyproject.toml                  # dependencies for poetry
 ├── README.md                       # describe your project
 ├── src                             # store source code
