@@ -3,15 +3,33 @@ defaults:
   - model: model1
   - _self_
 
-raw: 
-  path: data/raw/sample.csv
+
+raw_data:
+  name: audit_logs
+  path: '../../../mlops_pbi_hs2/mlops_pbi/data/raw/*.csv' # this is the path to the raw data
+  format: csv
+  mode: overwrite
+  header: 0
+  encoding: 'utf-8'
+  on_bad_lines: 'skip'
+  low_memory: 'False'
+  names: ['Id', 'CreationTime', 'CreationTimeUTC', 'RecordType', 'Operation',
+       'OrganizationId', 'UserType', 'UserKey', 'Workload', 'UserId',
+       'ClientIP', 'UserAgent', 'Activity', 'ItemName', 'WorkSpaceName',
+       'DashboardName', 'DatasetName', 'ReportName', 'WorkspaceId', 'ObjectId',
+       'DashboardId', 'DatasetId', 'ReportId', 'OrgAppPermission',
+       'CapacityId', 'CapacityName', 'AppName', 'IsSuccess', 'ReportType',
+       'RequestId', 'ActivityId', 'AppReportId', 'DistributionMethod',
+       'ConsumptionMethod', 'RetrieveDate']
+  separator: ','
+
 
 processed:
   dir: data/processed
   name: processed.csv
-  path: ${processed.dir}/${processed.name}
+  path: ${processed.dir}/${processed.name} # this is the path to the processed data
 
 final:
   dir: data/final
   name: final.csv
-  path: ${final.dir}/${final.name}
+  path: ${final.dir}/${final.name} # this is the path to the final data
