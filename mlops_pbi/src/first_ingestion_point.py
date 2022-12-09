@@ -9,9 +9,9 @@ from datetime import datetime, timedelta, timezone
 today = datetime.today()
 now = datetime.now(timezone.utc)
 
-'_____________________________________________________________________________________'
-'------------------- Power BI Activity Log Script  SECTION 1 -------------------------'
-'-------------------------------------------------------------------------------------'
+"_____________________________________________________________________________________"
+"------------------- Power BI Activity Log Script  SECTION 1 -------------------------"
+"-------------------------------------------------------------------------------------"
 
 
 def log_step_pbia(func):
@@ -20,7 +20,9 @@ def log_step_pbia(func):
         tic = dt.datetime.now()
         result = func(*args, **kwargs)
         time_taken = str(dt.datetime.now() - tic)
-        print(f"just ran step {func.__name__} shape={result.shape} took {time_taken}s")
+        print(
+            f"just ran step {func.__name__} shape={result.shape} took {time_taken}s"
+        )
         return result
 
     return wrapper
@@ -29,13 +31,13 @@ def log_step_pbia(func):
 @log_step_pbia
 def start_pipeline_pbia(df) -> pd.DataFrame:
     """
-        Args:
-        data (dataframe)
-        Returns:
-        pd.DataFrame: copy
-        Notes:
-        This start_pipeline function is a safety mechanism.
-        It guarantees that the functions will have no side effect on the raw data.
+    Args:
+    data (dataframe)
+    Returns:
+    pd.DataFrame: copy
+    Notes:
+    This start_pipeline function is a safety mechanism.
+    It guarantees that the functions will have no side effect on the raw data.
     """
     return df.copy()
 
@@ -50,35 +52,42 @@ def format_datatype_dates(df) -> pd.DataFrame:
     :return: dataframe
     """
 
-    date_cols = [col for col in df.columns if 'Time' in col]
-    df[date_cols] = df[date_cols].applymap(lambda x: pd.to_datetime(x, format='%Y %M %d',
-                                                                    infer_datetime_format=True))
+    date_cols = [col for col in df.columns if "Time" in col]
+    df[date_cols] = df[date_cols].applymap(
+        lambda x: pd.to_datetime(
+            x, format="%Y %M %d", infer_datetime_format=True
+        )
+    )
     return df
 
 
 @log_step_pbia
 def add_month_year_cols_users(df):
     """
-        Args:
-        data (dataframe)
-        Returns:
-        pd.DataFrame: (dataframe)
-        Notes:
-        This function adds month and year colunms as integers to the dataframe.
-        The values are extracted from the date colunms.
+    Args:
+    data (dataframe)
+    Returns:
+    pd.DataFrame: (dataframe)
+    Notes:
+    This function adds month and year colunms as integers to the dataframe.
+    The values are extracted from the date colunms.
     """
-    return df.assign(createdDate_month=lambda d: pd.DatetimeIndex(df['CreationTime']).month,
-                     createdDate_year=lambda d: pd.DatetimeIndex(df['CreationTime']).year,
-                     createdDate_day=lambda d: pd.DatetimeIndex(df['CreationTime']).day)
+    return df.assign(
+        createdDate_month=lambda d: pd.DatetimeIndex(df["CreationTime"]).month,
+        createdDate_year=lambda d: pd.DatetimeIndex(df["CreationTime"]).year,
+        createdDate_day=lambda d: pd.DatetimeIndex(df["CreationTime"]).day,
+    )
 
 
 # variables for the next function i.e. api_calls_filtered_out
-service_account = 'SA_DAL_PowerBI@hs2.org.uk'
-operation = 'ExportActivityEvents'
+service_account = "SA_DAL_PowerBI@hs2.org.uk"
+operation = "ExportActivityEvents"
 
 
 @log_step_pbia
-def api_calls_filtered_out(df, the_service_account, the_operation) -> pd.DataFrame:
+def api_calls_filtered_out(
+    df, the_service_account, the_operation
+) -> pd.DataFrame:
     """
         Args: data (dataframe), service_account (string), operation (string)
         This function filters out all rows that are not related to the defined service account and operation.
@@ -87,7 +96,9 @@ def api_calls_filtered_out(df, the_service_account, the_operation) -> pd.DataFra
     :param the_operation:
     :return: df
     """
-    filter_out_apiCalls = df.query('`Operation` != @the_operation & `UserId` != @the_service_account')
+    filter_out_apiCalls = df.query(
+        "`Operation` != @the_operation & `UserId` != @the_service_account"
+    )
     return filter_out_apiCalls
 
 
@@ -107,9 +118,9 @@ def lower_case_cols(df, col1, col2) -> pd.DataFrame:
     return df
 
 
-'_____________________________________________________________________________________'
-'------------------- Power BI Activity Log Script  SECTION 2 -------------------------'
-'-------------------------------------------------------------------------------------'
+"_____________________________________________________________________________________"
+"------------------- Power BI Activity Log Script  SECTION 2 -------------------------"
+"-------------------------------------------------------------------------------------"
 
 
 @log_step_pbia
@@ -126,10 +137,21 @@ def single_user_df(df) -> pd.DataFrame:
     :param df:
     :return:
     """
-    singleUserView = \
-        df.groupby(['UserId', 'UserKey', 'WorkSpaceName', 'WorkspaceId', 'ReportName', 'ReportId', 'Activity'])[
-            'CreationTime'].agg(
-            ['count', 'min', 'max']).reset_index()
+    singleUserView = (
+        df.groupby(
+            [
+                "UserId",
+                "UserKey",
+                "WorkSpaceName",
+                "WorkspaceId",
+                "ReportName",
+                "ReportId",
+                "Activity",
+            ]
+        )["CreationTime"]
+        .agg(["count", "min", "max"])
+        .reset_index()
+    )
     return singleUserView
 
 
@@ -142,8 +164,9 @@ def lengthOfDays_withActivity(df) -> pd.DataFrame:
     :param df: dataframe
     :return: dataframe
     """
-    df['lengthOfDays_withActivity'] = (((df['max'] - df['min']).astype(
-        'timedelta64[D]')) + 1)  # to avoid infinity as today minus today =0
+    df["lengthOfDays_withActivity"] = (
+        (df["max"] - df["min"]).astype("timedelta64[D]")
+    ) + 1  # to avoid infinity as today minus today =0
 
     return df
 
@@ -160,7 +183,9 @@ def lengthOfDays_since_lastActive(df) -> pd.DataFrame:
         pd.DataFrame: _description_
     """
 
-    df['lengthOfDays_since_lastActive'] = ((now - df['max']).astype('timedelta64[D]')+1)
+    df["lengthOfDays_since_lastActive"] = (now - df["max"]).astype(
+        "timedelta64[D]"
+    ) + 1
 
     return df
 
@@ -176,7 +201,9 @@ def lengthOfDays_since_firstRecord(df) -> pd.DataFrame:
         pd.DataFrame: dataframe
     """
 
-    df['lengthOfDays_since_firstRecord'] = ((now - df['min']).astype('timedelta64[D]')+1)
+    df["lengthOfDays_since_firstRecord"] = (now - df["min"]).astype(
+        "timedelta64[D]"
+    ) + 1
 
     return df
 
@@ -193,7 +220,17 @@ def single_user_frequency(df) -> pd.DataFrame:
     Returns:
         pd.DataFrame: _description_
     """
-    df['frequency'] = round(((df['lengthOfDays_since_firstRecord'] - df['lengthOfDays_withActivity']) / df['count'])**2, 2)
+    df["frequency"] = round(
+        (
+            (
+                df["lengthOfDays_since_firstRecord"]
+                - df["lengthOfDays_withActivity"]
+            )
+            / df["count"]
+        )
+        ** 2,
+        2,
+    )
     return df
 
 
@@ -209,14 +246,23 @@ def percent_time_inactiveFor(df) -> pd.DataFrame:
     Returns:
         pd.DataFrame: _description_
     """
-    df['%_time_inactiveFor'] = round(((df['lengthOfDays_since_firstRecord'] - df['lengthOfDays_withActivity']) / df[
-        'lengthOfDays_since_firstRecord']) * 100, 3)
+    df["%_time_inactiveFor"] = round(
+        (
+            (
+                df["lengthOfDays_since_firstRecord"]
+                - df["lengthOfDays_withActivity"]
+            )
+            / df["lengthOfDays_since_firstRecord"]
+        )
+        * 100,
+        3,
+    )
     return df
 
 
-'_____________________________________________________________________________________'
-'------------------- Power BI Activity Log Script  SECTION 3 -------------------------'
-'-------------------------------------------------------------------------------------'
+"_____________________________________________________________________________________"
+"------------------- Power BI Activity Log Script  SECTION 3 -------------------------"
+"-------------------------------------------------------------------------------------"
 
 
 def compare_df_col(df1, df2, col) -> list:
@@ -239,7 +285,7 @@ def compare_df_col(df1, df2, col) -> list:
 
 
 def blank_users_df(df, the_missing_user_list) -> pd.DataFrame:
-    missing_users_df = df.query('UserId in @the_missing_user_list')
+    missing_users_df = df.query("UserId in @the_missing_user_list")
     return missing_users_df
 
 
