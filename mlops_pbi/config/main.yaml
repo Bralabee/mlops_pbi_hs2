@@ -6,7 +6,7 @@ defaults:
 
 raw_data:
   name: audit_logs
-  path: '../../../mlops_pbi_hs2/mlops_pbi/data/raw/*.csv' # this is the path to the raw data
+  path: '../../../rawLogs/mlops_pbi_hs2/mlops_pbi/data/raw/*.csv' # this is the path to the raw data
   format: csv
   mode: overwrite
   header: 0
@@ -22,6 +22,7 @@ raw_data:
        'RequestId', 'ActivityId', 'AppReportId', 'DistributionMethod',
        'ConsumptionMethod', 'RetrieveDate']
   separator: ','
+  engine: python
 
 
 processed:

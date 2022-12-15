@@ -1,3 +1,62 @@
-use_columns: 
-  - col1
-  - col2
+# John's List of Parameters config (johns list of workspaces and ad groups to ingestivate)
+johnsList:
+    name: groups_of_interest
+    path: 'C:\Power BI Workspace and AD groups.csv'
+    header: 0
+    encoding: 'ANSI'
+    on_bad_lines: 'skip'
+    low_memory: 'False'
+    names: ['WorkspaceName', 'DisplayName', 'GroupId']
+    separator: ','
+
+# AD Group Users config
+az_adgroups_users:
+    name: adgroup_users
+    path: 'C:\azure_ad_groups\get_ADGroupUsers.csv'
+    header: 0
+    encoding: 'UTF-16'
+    on_bad_lines: 'skip'
+    low_memory: 'False'
+    names: ['UserId', 'UserName', 'GroupId', 'Blank']
+    separator: ','
+
+# AD Groups config
+az_adgroups:
+    name: ad_group
+    path: 'C:\ad_groups.csv'
+    header: 1
+    encoding: 'UTF-8'
+    on_bad_lines: 'skip'
+    low_memory: 'False'
+    names: ['GroupId', 'DisplayName', 'MailNickname', 'Description']
+    separator: ','
+
+# AD Users config
+az_adusers:
+    name: ad_users
+    path: 'C:\ad_users.csv'
+    header: 0
+    encoding: 'UTF-16'
+    on_bad_lines: 'skip'
+    low_memory: 'False'
+    names: ['UserId', 'UserName', 'DisplayName', 'Mail', 'Blank']
+    separator: ','
+
+
+# Activity Log config
+activity_logs:
+    name: activity_log
+    path: 'C:\get_activity_log/*.csv'
+    header: 1
+    encoding: 'UTF-8'
+    #on_bad_lines: 'skip'
+    low_memory: 'False'
+    names: ['Id', 'CreationTime', 'CreationTimeUTC', 'RecordType', 'Operation',
+       'OrganizationId', 'UserType', 'UserKey', 'Workload', 'UserId',
+       'ClientIP', 'UserAgent', 'Activity', 'ItemName', 'WorkSpaceName',
+       'DashboardName', 'DatasetName', 'ReportName', 'WorkspaceId', 'ObjectId',
+       'DashboardId', 'DatasetId', 'ReportId', 'OrgAppPermission',
+       'CapacityId', 'CapacityName', 'AppName', 'IsSuccess', 'ReportType',
+       'RequestId', 'ActivityId', 'AppReportId', 'DistributionMethod',
+       'ConsumptionMethod', 'RetrieveDate']
+    separator: ','
