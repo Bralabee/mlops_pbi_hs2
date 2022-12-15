@@ -16,7 +16,7 @@ from load_all_datasets import load_activity_logs
 from typing import List, Dict
 import pandas as pd
 from prefect import task, flow
-from ingest_raw_activity_log.johns_request.src.helper import load_config
+from mlops_pbi.src.helper import load_config
 
 from omegaconf import DictConfig
 

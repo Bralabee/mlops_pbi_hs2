@@ -5,7 +5,7 @@ from prefect import task, flow
 from omegaconf import DictConfig
 import glob
 
-from ingest_raw_activity_log.johns_request.src.helper import load_config
+from mlops_pbi.src.helper import load_config
 
 
 # ----------------------------------------------------------------------------------------------#
